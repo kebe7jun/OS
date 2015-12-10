@@ -1,18 +1,21 @@
 #include "console.h"
 #include "keyboard_map.h"
 
+
 // VGA 的显示缓冲的起点是 0xB8000
 static uint16_t *video_memory = (uint16_t *)0xB8000;
+
 
 // 屏幕"光标"的坐标
 static uint8_t cursor_x = 0;
 static uint8_t cursor_y = 0;
 static uint8_t is_shift_down = 0;
+static uint8_t font_size = 80;
 
 static void move_cursor()
 {
     // 屏幕是 80 字节宽
-    uint16_t cursorLocation = cursor_y * 80 + cursor_x;
+    uint16_t cursorLocation = cursor_y * font_size + cursor_x;
     
     // 在这里用到的两个内部寄存器的编号为14与15，分别表示光标位置
     // 的高8位与低8位。
@@ -29,7 +32,7 @@ void console_clear()
     uint16_t blank = 0x20 | (attribute_byte << 8);
 
     int i;
-    for (i = 0; i < 80 * 25; i++) {
+    for (i = 0; i < font_size * 25; i++) {
           video_memory[i] = blank;
     }
 
@@ -50,12 +53,12 @@ static void scroll()
         // 将所有行的显示数据复制到上一行，第一行永远消失了...
         int i;
         
-        for (i = 0 * 80; i < 24 * 80; i++) {
+        for (i = 0 * font_size; i < 24 * font_size; i++) {
               video_memory[i] = video_memory[i+80];
         }
 
         // 最后的一行数据现在填充空格，不显示任何字符
-        for (i = 24 * 80; i < 25 * 80; i++) {
+        for (i = 24 * font_size; i < 25 * font_size; i++) {
               video_memory[i] = blank;
         }
         
