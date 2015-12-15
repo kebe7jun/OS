@@ -300,6 +300,7 @@ void onKeyDown(char keycode)
     if (onGetKeyFunction)
     {
         (*onGetKeyFunction)(keycode); //Call
+        onGetKeyFunction = NULL;
     }
     // putch(ch);
 }

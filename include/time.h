@@ -1,10 +1,11 @@
-#ifndef _TIME_h
+#ifndef _TIME_H
 #define _TIME_H 
+#include "stdio.h"
 
-/**
-Get a rang number from 0-65535
-*/
-int rand();
-void srand();
+int rang();
+void srang(int);
+void timer_install();
+void sleep(int ticks);
+time_t time();
 
 #endif
