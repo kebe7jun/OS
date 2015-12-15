@@ -1,4 +1,4 @@
-#include "console.h"
+#include "stdio.h"
 #include "keyboard_map.h"
 
 
@@ -68,7 +68,7 @@ static void scroll()
 }
 
 
-void console_putc_color(char c, real_color_t back, real_color_t fore)
+void putch_color(char c, real_color_t back, real_color_t fore)
 {
     uint8_t back_color = (uint8_t)back;
     uint8_t fore_color = (uint8_t)fore;
@@ -108,12 +108,13 @@ void console_putc_color(char c, real_color_t back, real_color_t fore)
 void console_write(char *cstr)
 {
     while (*cstr) {
-          console_putc_color(*cstr++, rc_black, rc_white);
+          putch(*cstr++);
     }
 }
 
-void console_write_char(char c){
-    console_putc_color(c, rc_black, rc_white);
+void putch(char c)
+{
+    putch_color(c, rc_black, rc_white);
 }
 
 void console_write_uint32_t(uint32_t t){
@@ -121,25 +122,19 @@ void console_write_uint32_t(uint32_t t){
     uint32_t tmp = 1000000000;
     uint32_t tmp1;
     char isFind = 0;
-    if (t<0)
-    {
-        /* code */
-        console_write_char('-');
-        t = 0-t;
-    }
     while(tmp){
         tmp1 = t/tmp;
         t = t%tmp;
         if (tmp1)
         {
-            console_write_char('0'+tmp1);
+            putch('0'+tmp1);
             isFind = 1;
         }
         else
         {
             if (isFind)
             {
-                console_write_char('0');
+                putch('0');
             }
         }
         tmp = tmp/10;
@@ -152,25 +147,19 @@ void console_write_uint8_t(uint8_t t){
     uint8_t tmp = 100;
     uint8_t tmp1;
     char isFind = 0;
-    if (t<0)
-    {
-        /* code */
-        console_write_char('-');
-        t = 0-t;
-    }
     while(tmp){
         tmp1 = t/tmp;
         t = t%tmp;
         if (tmp1)
         {
-            console_write_char('0'+tmp1);
+            putch('0'+tmp1);
             isFind = 1;
         }
         else
         {
             if (isFind)
             {
-                console_write_char('0');
+                putch('0');
             }
         }
         tmp = tmp/10;
@@ -181,8 +170,101 @@ void console_write_uint8_t(uint8_t t){
 void console_write_color(char *cstr, real_color_t back, real_color_t fore)
 {
     while (*cstr) {
-          console_putc_color(*cstr++, back, fore);
+          putch_color(*cstr++, back, fore);
     }
+}
+
+
+void itoa (char *buf, int base, int d)
+     {
+       char *p = buf;
+       char *p1, *p2;
+       unsigned long ud = d;
+       int divisor = 10;
+     
+       /* If %d is specified and D is minus, put `-' in the head. */
+       if (base == 'd' && d < 0)
+         {
+           *p++ = '-';
+           buf++;
+           ud = -d;
+         }
+       else if (base == 'x')
+         divisor = 16;
+     
+       /* Divide UD by DIVISOR until UD == 0. */
+       do
+         {
+           int remainder = ud % divisor;
+     
+           *p++ = (remainder < 10) ? remainder + '0' : remainder + 'a' - 10;
+         }
+       while (ud /= divisor);
+     
+       /* Terminate BUF. */
+       *p = 0;
+     
+       /* Reverse BUF. */
+       p1 = buf;
+       p2 = p - 1;
+       while (p1 < p2)
+         {
+           char tmp = *p1;
+           *p1 = *p2;
+           *p2 = tmp;
+           p1++;
+           p2--;
+       }
+}
+
+void printf (const char *format, ...)
+{
+       char **arg = (char **) &format;
+       int c;
+       char buf[20];
+     
+       arg++;
+     
+       while ((c = *format++) != 0)
+         {
+           if (c != '%')
+             putch(c);
+           else
+             {
+               char *p;
+     
+               c = *format++;
+               switch (c)
+                 {
+                 case 'd':
+                 case 'u':
+                 case 'x':
+                   itoa (buf, c, *((int *) arg++));
+                   p = buf;
+                   goto string;
+                   break;
+     
+                 case 's':
+                   p = *arg++;
+                   if (! p)
+                     p = "(null)";
+     
+                 string:
+                   while (*p)
+                     putch (*p++);
+                   break;
+     
+                 default:
+                   putch (*((int *) arg++));
+                   break;
+                 }
+             }
+}
+}
+
+void (*onGetKeyFunction)(char keycode);
+void registerListenKey(void (*function)(char keycode)){
+    onGetKeyFunction = function;
 }
 
 void onKeyDown(char keycode)
@@ -206,11 +288,16 @@ void onKeyDown(char keycode)
             ch = keyboard_map_1[keycode];
         }
     }
-    console_write_char(ch);
+    printf("%c", ch);
     if (ch == '\b')
     {
-        console_write_char(' ');
-        console_write_char('\b');
+        putch(' ');
+        putch('\b');
+    }
+    if (onGetKeyFunction)
+    {
+        (*onGetKeyFunction)(keycode); //Call
+        onGetKeyFunction = NULL;
     }
 }
 

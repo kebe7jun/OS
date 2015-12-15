@@ -15,7 +15,6 @@ global read_port
 global write_port
 global load_idt
 
-;extern kmain 		;this is defined in the c file
 extern keyboard_handler_main
 
 read_port:
@@ -40,11 +39,6 @@ keyboard_handler:
 	call    keyboard_handler_main
 	iretd
 
-;start:
-;	cli 				;block interrupts
-;	mov esp, stack_space
-;	call kmain
-;	hlt 				;halt the CPU
 
 section .bss
 resb 8192; 8KB for stack

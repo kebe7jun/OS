@@ -41,10 +41,14 @@ void console_write_hex(uint32_t n, real_color_t back, real_color_t fore);
 // 屏幕输出一个十进制的整型数
 void console_write_dec(uint32_t n, real_color_t back, real_color_t fore);
 
+void printf(const char *format , ...);
+
 // Press key.
 void onKeyDown(char keycode);
 
 //Key relese.
 void onKeyUp(char keycode);
+
+void registerListenKey(void (*function)(char keycode));
 
 #endif  // INCLUDE_CONSOLE_H_

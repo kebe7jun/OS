@@ -3,7 +3,7 @@
 * License: GPL version 2 or higher http://www.gnu.org/licenses/gpl.html
 */
 
-#include "console.h"
+#include "stdio.h"
 
 /* there are 25 lines each of 80 columns; each element takes 2 bytes */
 #define LINES 25
@@ -100,30 +100,6 @@ void kb_init(void)
 	write_port(0x21 , 0xFD);
 }
 
-void kprint(const char *str)
-{
-	// unsigned int i = 0;
-	// while (str[i] != '\0') {
-	// 	vidptr[current_loc++] = str[i++];
-	// 	vidptr[current_loc++] = 0x07;
-	// }
-	console_write(str);
-}
-
-void kprint_newline(void)
-{
-	console_write("\n");
-}
-
-void clear_screen(void)
-{
-	// unsigned int i = 0;
-	// while (i < SCREENSIZE) {
-	// 	vidptr[i++] = ' ';
-	// 	vidptr[i++] = 0x07;
-	// }
-	console_clear();
-}
 
 void keyboard_handler_main(void)
 {
@@ -134,8 +110,6 @@ void keyboard_handler_main(void)
 	write_port(0x20, 0x20);
 
 	status = read_port(KEYBOARD_STATUS_PORT);
-	// console_write_uint32_t(132312312);
-	// console_write_int(status);
 	/* Lowest bit of status will be set if buffer is not empty */
 	if (status & 0x01) {
 		keycode = read_port(KEYBOARD_DATA_PORT);
