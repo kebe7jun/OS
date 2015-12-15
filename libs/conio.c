@@ -18,6 +18,7 @@ void onGetKeyFunction(char keycode1)
 int getch()
 {
 	char keycode1;
+	// printf("onGetKeyFunction:%d\n", &onGetKeyFunction);
     registerListenKey(&onGetKeyFunction);
     while(keycode == -1);
     keycode1 = keycode;

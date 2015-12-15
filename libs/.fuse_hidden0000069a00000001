@@ -262,12 +262,12 @@ void printf (const char *format, ...)
 }
 }
 
-static void (*onGetKeyFunction)(char keycode);
+void (*onGetKeyFunction)(char keycode);
 void registerListenKey(void (*function)(char keycode)){
     onGetKeyFunction = function;
-    // printf("function:%d\n", function);
-    // printf("onGetKeyFunction:%d\n", onGetKeyFunction);
-    // (*function)(112);
+    (*function)(112);
+    printf("function:%d\n", function);
+    printf("onGetKeyFunction:%d\n", onGetKeyFunction);
 }
 
 void onKeyDown(char keycode)
@@ -301,7 +301,7 @@ void onKeyDown(char keycode)
     {
         (*onGetKeyFunction)(keycode); //Call
     }
-    // putch(ch);
+    putch(ch);
 }
 
 void onKeyUp(char keycode)

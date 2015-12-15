@@ -8,8 +8,10 @@ int os_entry()
 	printf("%s\n", "Welcome to use 7JunOS!");
 	idt_init();
 	kb_init();
-	x = getch();
-	printf("%d\n", x);
+	while(1){
+		x = getch();
+		printf("%d\n", x);
+	}
 	while(1);
     return 0;
 }
