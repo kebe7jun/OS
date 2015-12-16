@@ -16,10 +16,9 @@ int os_entry()
 
 	srand(time());
 	while(1){
-		x = getch();
+		int x = 123;
+		scanf("%d", &x);
 		printf("%d\n", x);
-		printf("%d\n", time());
-		printf("%d\n", rand());
 	}
 	while(1);
     return 0;

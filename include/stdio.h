@@ -11,6 +11,10 @@
     #define FALSE 0
 #endif
 
+#ifndef SCANF_MAX_BUFFER_LENGTH
+#define SCANF_MAX_BUFFER_LENGTH 4096
+#endif
+
 typedef unsigned int   uint32_t;
 typedef          int   int32_t;
 typedef unsigned short uint16_t;
@@ -43,22 +47,23 @@ enum real_color {
 // 清屏操作
 void console_clear();
 
-// 屏幕输出一个字符  带颜色
-void console_putc_color(char c, real_color_t back, real_color_t fore);
+// // 屏幕输出一个字符  带颜色
+// void console_putc_color(char c, real_color_t back, real_color_t fore);
 
-// 屏幕打印一个以 \0 结尾的字符串  默认黑底白字
-void console_write(char *cstr);
+// // 屏幕打印一个以 \0 结尾的字符串  默认黑底白字
+// void console_write(char *cstr);
 
-// 屏幕打印一个以 \0 结尾的字符串  带颜色
-void console_write_color(char *cstr, real_color_t back, real_color_t fore);
+// // 屏幕打印一个以 \0 结尾的字符串  带颜色
+// void console_write_color(char *cstr, real_color_t back, real_color_t fore);
 
-// 屏幕输出一个十六进制的整型数
-void console_write_hex(uint32_t n, real_color_t back, real_color_t fore);
+// // 屏幕输出一个十六进制的整型数
+// void console_write_hex(uint32_t n, real_color_t back, real_color_t fore);
 
-// 屏幕输出一个十进制的整型数
-void console_write_dec(uint32_t n, real_color_t back, real_color_t fore);
+// // 屏幕输出一个十进制的整型数
+// void console_write_dec(uint32_t n, real_color_t back, real_color_t fore);
 
 void printf(const char *format , ...);
+int scanf(const char *format, ...);
 
 // Press key.
 void onKeyDown(char keycode);
@@ -67,5 +72,7 @@ void onKeyDown(char keycode);
 void onKeyUp(char keycode);
 
 void registerListenKey(void (*function)(char keycode));
+
+void setColor(real_color_t back, real_color_t front);
 
 #endif  // INCLUDE_CONSOLE_H_

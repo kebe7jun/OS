@@ -7,7 +7,7 @@
 
 #ifndef _COMMON_H
 #define _COMMON_H
-#include "types.h"
+#include "stdio.h"
 
 // 端口写一个字节
 void outb(uint16_t port, uint8_t value);

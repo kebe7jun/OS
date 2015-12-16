@@ -11,6 +11,8 @@ static uint8_t cursor_x = 0;
 static uint8_t cursor_y = 0;
 static uint8_t is_shift_down = 0;
 static uint8_t font_size = 80;
+static real_color_t now_set_color_back = rc_black;
+static real_color_t now_set_color_front = rc_white;
 
 static void move_cursor()
 {
@@ -114,7 +116,7 @@ void console_write(char *cstr)
 
 void putch(char c)
 {
-    putch_color(c, rc_black, rc_white);
+    putch_color(c, now_set_color_back, now_set_color_front);
 }
 
 void console_write_uint32_t(uint32_t t){
@@ -241,19 +243,19 @@ void printf (const char *format, ...)
                  case 'x':
                    itoa (buf, c, *((int *) arg++));
                    p = buf;
-                   goto string;
+                   while (*p)
+                     putch (*p++);
                    break;
      
                  case 's':
                    p = *arg++;
                    if (! p)
                      p = "(null)";
-     
-                 string:
+    
                    while (*p)
                      putch (*p++);
                    break;
-     
+                
                  default:
                    putch (*((int *) arg++));
                    break;
@@ -262,21 +264,14 @@ void printf (const char *format, ...)
 }
 }
 
-static void (*onGetKeyFunction)(char keycode);
-void registerListenKey(void (*function)(char keycode)){
-    onGetKeyFunction = function;
-    // printf("function:%d\n", function);
-    // printf("onGetKeyFunction:%d\n", onGetKeyFunction);
-    // (*function)(112);
-}
-
-void onKeyDown(char keycode)
+char getCharByKeyCode(char keycode)
 {
+    char ch;
     if (keycode == 42 || keycode == 54)
     {
         is_shift_down = 1;
     }
-    unsigned char ch = keyboard_map[keycode];
+    ch = keyboard_map[keycode];
     if (is_shift_down)
     {
         if (ch>='a' && ch <= 'z') 
@@ -291,16 +286,105 @@ void onKeyDown(char keycode)
             ch = keyboard_map_1[keycode];
         }
     }
+    return ch;
+}
+
+static char scanfStr[SCANF_MAX_BUFFER_LENGTH];
+static char keycode = -1;
+void onGetKeyFunctioScanf(char keycode1)
+{
+    keycode = keycode1;
+}
+
+int scanf(const char *format, ...)
+{
+    char ch;
+    int pos = 0;
+    int pos1 = 0;
+    char *p;
+    char **arg = (char **) &format;
+    arg++;
+    do
+    {
+        registerListenKey(&onGetKeyFunctioScanf);
+        while(keycode == -1);
+        ch = getCharByKeyCode(keycode);
+        keycode = -1;
+        if (ch!='\0')
+        {
+            scanfStr[pos++] = ch;
+            putch(ch);
+        }
+    }while(ch!='\n');
+    scanfStr[pos-1] = '\0';
+    pos = 0;
+    while(*format)
+    {
+        if (*format == '%')
+        {
+
+            char tmp[SCANF_MAX_BUFFER_LENGTH];
+            ch = *++format;
+            pos1 = 0;
+
+            p = *arg++;
+            while(scanfStr[pos] == ' ') pos++;  //Clear space
+            switch(ch)
+            {
+                case 'd':
+                  while(scanfStr[pos] != ' ' && scanfStr[pos])
+                  {
+                      tmp[pos1++] = scanfStr[pos++];
+                  }
+                  tmp[pos1++] = '\0';
+                  *(int*)p = convertStringToInt(tmp);
+                  break;
+                case 'c':
+                  *p = scanfStr[pos++];
+                  break;
+                case 's':
+                  while(scanfStr[pos] != ' ' && scanfStr[pos])
+                  {
+                      tmp[pos1++] = scanfStr[pos++];
+                  }
+                  tmp[pos1++] = '\0';
+                  strcpy(p, tmp);
+                  break;
+            }
+        }
+        format++;
+    }
+    return 0;
+}
+
+void setColor(real_color_t back, real_color_t front)
+{
+    now_set_color_back = back;
+    now_set_color_front = front;
+}
+
+static void (*onGetKeyFunction)(char keycode);
+static int isSendKeyCode = 0;
+void registerListenKey(void (*function)(char keycode)){
+    onGetKeyFunction = function;
+    isSendKeyCode = 0;
+    // printf("function:%d\n", function);
+    // printf("onGetKeyFunction:%d\n", onGetKeyFunction);
+    // (*function)(112);
+}
+
+void onKeyDown(char keycode)
+{
     // printf("%c", ch);
     // if (ch == '\b')
     // {
     //     putch(' ');
     //     putch('\b');
     // }
-    if (onGetKeyFunction)
+    if (onGetKeyFunction && !isSendKeyCode)
     {
         (*onGetKeyFunction)(keycode); //Call
-        onGetKeyFunction = NULL;
+        isSendKeyCode = 1;
     }
     // putch(ch);
 }
@@ -312,3 +396,4 @@ void onKeyUp(char keycode)
         is_shift_down = 0;
     }
 }
+
