@@ -25,3 +25,13 @@ int getch()
     keycode = -1;
     return keycode1;
 }
+int getchInStep(uint32_t step)
+{
+	char keycode1;
+	// printf("onGetKeyFunction:%d\n", &onGetKeyFunction);
+    registerListenKey(&onGetKeyFunction);
+    while(step--);
+    keycode1 = keycode;
+    keycode = -1;
+    return keycode1;
+}

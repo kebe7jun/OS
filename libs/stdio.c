@@ -121,6 +121,13 @@ void putch_color(char c, real_color_t back, real_color_t fore)
     move_cursor();
 }
 
+void putch_color_pos(char c, real_color_t back, real_color_t fore, int x, int y)
+{
+    cursor_x = x;
+    cursor_y = y;
+    putch_color(c, back, fore);
+}
+
 void console_write(char *cstr)
 {
     while (*cstr)
@@ -338,8 +345,11 @@ void gets(char *chs)
         }
         else
         {
-            chs[pos++] = ch;
-            putch(ch);
+            if (ch && ch != (char)27)
+            {
+               chs[pos++] = ch;
+                putch(ch);
+            }
         }
 
     }

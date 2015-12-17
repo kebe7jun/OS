@@ -65,6 +65,8 @@ void console_clear();
 
 Now support %s %d %c %p %x format
 */
+
+void putch_color_pos(char c, real_color_t back, real_color_t fore, int x, int y);
 void printf(const char *format , ...);
 /*
 Now support %s %c %d
