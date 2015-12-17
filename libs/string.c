@@ -42,3 +42,25 @@ int convertStringToInt(char *str)
 	}
 	return t;
 }
+int strcmp(char* str1, char *str2)
+{
+	int cmp = 0;
+	int len = 0;
+	while(*str1 && *str2)
+	{
+		cmp+=(*str1-*str2);
+		str1++;
+		str2++;
+	}
+	len = strlen(str1);
+	while (len--)
+	{
+		cmp += *str1++;
+	}
+	len = strlen(str2);
+	while (len--)
+	{
+		cmp -= *str2++;
+	}
+	return cmp;
+}

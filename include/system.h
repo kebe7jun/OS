@@ -13,4 +13,7 @@ extern void print_cpuid(int i);
 extern unsigned read_cmos(unsigned reg, char bcd);
 extern int rand();
 extern void srand(int new_seed);
+
+
+extern void reboot();
 #endif

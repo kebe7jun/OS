@@ -1,4 +1,6 @@
 #include "system.h"
+#include "common.h"
+#include "time.h"
 
 
 void newcpuid(unsigned long op, unsigned long v[4])
@@ -20,4 +22,15 @@ unsigned read_cmos(unsigned reg, char bcd)
 	high_digit &= 0x0F;
 	low_digit &= 0x0F;
 	return 10 * high_digit + low_digit;
+}
+
+/**
+Reboot
+*/
+void reboot()
+{
+	printf("System rebooting...\n");
+	// sleep(1);
+	outb(0x64, 0xFE);
+	printf("Sorry, reboot faild, please press the reset button.\n");
 }

@@ -1,18 +1,17 @@
-#ifndef INCLUDE_CONSOLE_H_
-#define INCLUDE_CONSOLE_H_
+#ifndef _STDIO_H
+#define _STDIO_H
 
 
 #ifndef NULL
     #define NULL 0
 #endif
 
-#ifndef TRUE
-    #define TRUE  1
-    #define FALSE 0
-#endif
-
 #ifndef SCANF_MAX_BUFFER_LENGTH
 #define SCANF_MAX_BUFFER_LENGTH 4096
+#endif
+
+#ifndef RUN_SUCCESS
+#define RUN_SUCCESS 0
 #endif
 
 typedef unsigned int   uint32_t;
@@ -62,8 +61,17 @@ void console_clear();
 // // 屏幕输出一个十进制的整型数
 // void console_write_dec(uint32_t n, real_color_t back, real_color_t fore);
 
+/*
+
+Now support %s %d %c %p %x format
+*/
 void printf(const char *format , ...);
+/*
+Now support %s %c %d
+*/
 int scanf(const char *format, ...);
+
+void gets(char *chs);
 
 // Press key.
 void onKeyDown(char keycode);
@@ -73,6 +81,6 @@ void onKeyUp(char keycode);
 
 void registerListenKey(void (*function)(char keycode));
 
-void setColor(real_color_t back, real_color_t front);
+void setTextColor(real_color_t back, real_color_t front);
 
-#endif  // INCLUDE_CONSOLE_H_
+#endif
