@@ -8,7 +8,6 @@ int os_entry()
 {
 	int x;
 	console_clear();	//Clear the screen.	
-	printf("Welcome to use 7JunOS!\n");
 	idt_init();
 	kb_init();
 
