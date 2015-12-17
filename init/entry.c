@@ -2,7 +2,7 @@
 #include "conio.h"
 #include "time.h"
 #include "irq.h"
-
+#include "games.h"
 int os_entry()
 {
 	int x;
@@ -13,14 +13,8 @@ int os_entry()
 
 	// irq_install();
 	timer_install();
-
-	srand(time());
-	while(1){
-		x = getch();
-		printf("%d\n", x);
-		printf("%d\n", time());
-		printf("%d\n", rand());
-	}
+	printf("start games ~~~\n" );
+	game_play();
 	while(1);
     return 0;
 }
