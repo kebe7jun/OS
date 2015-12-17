@@ -28,7 +28,7 @@ void moveLeft(int digit[][LEN]);
 void moveUp(int digit[][LEN]);
 void moveRight(int digit[][LEN]);
 void moveDown(int digit[][LEN]);
-void addLeft(int digit[][LEN]);
+// void addLeft(int digit[][LEN]);
 void show(int digit[][LEN]);
 void keyDown(int digit[][LEN]);
 
@@ -216,12 +216,18 @@ void moveDown(int digit[][LEN])
 {
 	int i, j;
 	int pos, flag;
+	int isFree = 1;
 	for(i=0; i<LEN; i++)
 	{
 		pos = LEN;
 		flag = 0;
 		for(j=LEN-1; j>=0; j--)
 		{
+			// if(digit[i][j] == 0)
+			// {
+			// 	isFree = 0;
+			// 	return;
+			// }
 			if(digit[j][i] == 0 && !flag)//The first barrier positon
 			{
 				pos = j;
@@ -249,17 +255,73 @@ void addLeft(int digit[][LEN])
 	{
 		for(j=0; j<LEN; j++)
 		{
-			if((temp = digit[i][j] )!= 0 && digit[i][j+1] != 0)
+			if(j+1<LEN && (temp = digit[i][j] )!= 0 && digit[i][j+1] != 0)
 			{
 				if(temp == digit[i][j+1])
 				{
-					digit[i][j] =temp + digit[i][j+1];
+					digit[i][j] = temp + digit[i][j+1];
 					digit[i][j+1] = 0;
 				}
 			}
 		}
 	}
-	moveLeft(digit);
+}
+void addRight(int digit[][LEN])
+{
+	int i, j;
+	int temp;
+	for(i=0; i<LEN; i++)
+	{
+		for(j=LEN; j>=0; j--)
+		{
+			if(j-1>=0 && (temp = digit[i][j] ) != 0 && digit[i][j-1] != 0)
+			{
+				if(temp == digit[i][j-1])
+				{
+					digit[i][j] = temp + digit[i][j-1];
+					digit[i][j-1] = 0;
+				}
+			}
+		}
+	}
+}
+void addUp(int digit[][LEN])
+{
+	int i, j;
+	int temp;
+	for(i=0; i<LEN; i++)
+	{
+		for(j=0; j<LEN; j++)
+		{
+			if(j+1<LEN && (temp = digit[j][i] ) != 0 && digit[j+1][i] != 0)
+			{
+				if(temp == digit[j+1][i])
+				{
+					digit[j][i] = temp + digit[j+1][i];
+					digit[j+1][i] = 0;
+				}
+			}
+		}
+	}
+}
+void addDown(int digit[][LEN])
+{
+	int i, j;
+	int temp;
+	for(j=LEN; j>=0; j--)
+	{
+		for(j=0; j<LEN; j++)
+		{
+			if(j-1>=0 && (temp = digit[j][i] ) != 0 && digit[j-1][i] != 0)
+			{
+				if(temp == digit[j+1][i])
+				{
+					digit[j][i] = temp + digit[j-1][i];
+					digit[j-1][i] = 0;
+				}
+			}
+		}
+	}
 }
 void show(int digit[][LEN])
 {
@@ -301,22 +363,32 @@ void keyDown(int digit[][LEN])
 				// printf("left\n");
 				moveLeft(digit);
 				addLeft(digit);
+				moveLeft(digit);
 				createDigit(digit);
 				show(digit);
 				break;
 			case RIGHT :
-				printf("right\n");
+				// printf("right\n");
 				moveRight(digit);
+				addRight(digit);
+				moveRight(digit);
+				createDigit(digit);
 				show(digit);
 				break;
 			case UP:
-				printf("top\n");
+				// printf("top\n");
 				moveUp(digit);
+				addUp(digit);
+				moveUp(digit);
+				createDigit(digit);
 				show(digit);
 				break;
 			case DOWN:
 				printf("down\n");
 				moveDown(digit);
+				// addDown(digit);
+				// moveDown(digit);
+				// createDigit(digit);
 				show(digit);
 				break;
 			case EXIT:
