@@ -338,8 +338,11 @@ void gets(char *chs)
         }
         else
         {
-            chs[pos++] = ch;
-            putch(ch);
+            if (ch)
+            {
+               chs[pos++] = ch;
+                putch(ch);
+            }
         }
 
     }
