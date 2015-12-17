@@ -356,30 +356,7 @@ int scanf(const char *format, ...)
     char **arg = (char **) &format;
     char scanfStr[SCANF_MAX_BUFFER_LENGTH];
     arg++;
-    do
-    {
-        keycode = getch();
-        ch = getCharByKeyCode(keycode);
-        keycode = -1;
-        if (ch == '\b')
-        {
-            if (pos>0)
-            {
-                pos--;
-                putch('\b');
-                putch(' ');
-                putch('\b');
-            }
-        }
-        else
-        {
-            scanfStr[pos++] = ch;
-            putch(ch);
-        }
-
-    }
-    while(ch!='\n');
-    scanfStr[pos-1] = '\0';
+    gets(scanfStr);
     pos = 0;
     while(*format)
     {
