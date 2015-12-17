@@ -26,9 +26,7 @@ void timer_handler(struct regs *r)
     /* Display x every second */
     if (timer_ticks % 100 == 0)
     {
-        /*puts("\b\b\b\b\b\b");
-        print_time();*/
-        _tseconds++; /* Increase time */
+        _tseconds++;
          
         if( _tseconds == 60 )
         {
@@ -54,16 +52,17 @@ void timer_change_freq (int hz)
 
 void print_time()
 {
-     printf("%d:%d:%d", _thours, _tminutes, _tseconds);
+     printf("%d:%d:%d\n", _thours, _tminutes, _tseconds);
 }
 
 /* Waits for the given time */
 void sleep(int ticks)
 {
     unsigned long eticks;
-
-    eticks = timer_ticks + ticks;
-    while(timer_ticks < eticks);
+    time_t t1 = time(NULL);
+    eticks = t1 + ticks;
+    while(t1 < eticks)
+      t1 = time(NULL);
 }
 
 /* Sets up the system clock by installing the timer handler
@@ -171,7 +170,7 @@ static unsigned long date_time_to_time_t(unsigned year, unsigned month,
   return rv;
 }
 
-time_t time()
+time_t time(time_t *timer)
 {
   static signed char bcd = -1;
 /**/
@@ -224,8 +223,8 @@ signed 32-bit time_t will overflow before then, in 2038 */
   second = read_cmos(0, bcd); /* 0-59 */
 
   rv = date_time_to_time_t(year, month, date, hour, minute, second);
-  // if(timer != NULL)
-  //   (*timer) = rv;
+  if(timer != NULL)
+    (*timer) = rv;
   return rv;
 }
 

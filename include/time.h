@@ -6,6 +6,6 @@ int rang();
 void srang(int);
 void timer_install();
 void sleep(int ticks);
-time_t time();
+time_t time(time_t *timer);
 
 #endif
