@@ -3,7 +3,7 @@
 #include "stdio.h"
 
 int rang();
-void srang(int);
+void srand(int);
 void timer_install();
 void sleep(int ticks);
 time_t time(time_t *timer);

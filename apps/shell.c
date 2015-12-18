@@ -12,6 +12,7 @@
 #include "apps/shell.h"
 #include "apps/showTime.h"
 #include "apps/2048games.h"
+#include "apps/snake.h"
 
 #define SHELL_MAX_LENGTH 1024
 
@@ -26,9 +27,13 @@ void dealShell(char* shell)
 	{
 		result = main_show_time();
 	}
-	else if (!strcmp(shell, "game"))
+	else if (!strcmp(shell, "2048"))
 	{
-		game_play();
+		result = game_play();
+	}
+	else if (!strcmp(shell, "snake"))
+	{
+		result = main_snake();
 	}
 	else if (!strcmp(shell, "help"))
 	{
@@ -36,7 +41,8 @@ void dealShell(char* shell)
 		printf("This shell support the follows commands:\n");
 		printf("reboot    ------ Reboot you system.\n");
 		printf("time      ------ Show now system time.\n");
-		printf("game      ------ Play 2048 game.\n");
+		printf("2048      ------ Play 2048 game.\n");
+		printf("snake      ------ Play snake game.\n");
 		printf("help      ------ Show the help documents.\n");
 	}
 	else if (!strcmp(shell, ""))

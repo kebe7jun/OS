@@ -2,40 +2,14 @@
 #include "time.h"
 #include "conio.h"
 #define  LEN 4
+#define N 8
 #define SPACE 32
-#define A 97
-#define W 119
-#define D 100
-#define S 115
 #define EXIT 1
 #define LEFT 75
 #define UP 72
 #define RIGHT 77
 #define DOWN 80
-/*
-a  left 97
-w top 119
-d right 100
-s  down 115
-    space 32 
-     ESC 27
-*/
-  //create boxes
-
-void initBoxes(int digit[][LEN]);
-int getSpace(int n);
-void moveLeft(int digit[][LEN]);
-void moveUp(int digit[][LEN]);
-void moveRight(int digit[][LEN]);
-void moveDown(int digit[][LEN]);
-// void addLeft(int digit[][LEN]);
-void show(int digit[][LEN]);
-void keyDown(int digit[][LEN]);
-
-int abs(int value)
-{
-	return value<0?-value:value;
-}
+int score = 0;
 int selectDigit()
 {
 	int d;
@@ -74,61 +48,35 @@ void initBoxes(int digit[][LEN])
 }
 void createDigit(int digit[][LEN])
 {
-	int i, j, whichP;
+	int i, j;
 	int posX,  posY;// the rand position
-	int flag ;
 	srand((unsigned)time(NULL));
 	while(1)
 	{
-		flag = 1;
-		posX = abs(rand()%(LEN));
-		posY = abs(rand()%(LEN));
-		for(i=0; i<LEN; i++)
-		{
-			for(j=0; j<LEN; j++)
-			{
-				if(digit[i][j] != 0 && posX == i && posY == j)// have the same
-				{
-					flag = 0;
-					break;
-				}
-			}
-			if(!flag)
-			{
-				break;
-			}
-		}
-		if(flag)
-		{
-			digit[posX][posY] = selectDigit();	
+		posX = abs(rand())%LEN;
+		posY = abs(rand())%LEN;
+		if (!digit[posX][posY])
 			break;
-		}
 	}
+	digit[posX][posY] = selectDigit();	
 }
 int getSpace(int n)
 {	
 	if(n/10 == 0)//1
-	{
-		return LEN-1;
-	}
+		return N-1;
 	else if(n/100 == 0)//2
-	{
-		return LEN-2;
-	}
+		return N-2;
 	else if(n/1000 == 0)//3
-	{
-		return LEN-3;
-	}
+		return N-3;
 	else		//4
-	{
-		return LEN-4;
-	}
+		return N-4;
 }
 
-void moveLeft(int digit[][LEN])
+int moveLeft(int digit[][LEN])
 {
 	int i, j;
 	int pos, flag;
+	int isMove = 0;
 	for(i=0; i<LEN; i++)
 	{
 		pos = -1;
@@ -139,13 +87,12 @@ void moveLeft(int digit[][LEN])
 			{
 				pos = j;
 				flag = 1;
-				// digit[i][j-1] = digit[i][j];
-				// j--;
 			}
 			if(digit[i][j] != 0 && pos >= 0)
 			{
 				digit[i][pos] = digit[i][j];
 				digit[i][j] = 0;
+				isMove = 1;
 
 				pos = -1;
 				flag = 0;
@@ -153,11 +100,15 @@ void moveLeft(int digit[][LEN])
 			}
 		}
 	}
+	if(isMove)
+		return 1;
+	return 0;
 }
-void moveUp(int digit[][LEN])
+int moveUp(int digit[][LEN])
 {
 	int i, j;
 	int pos, flag;
+	int isMove = 0;
 	for(i=0; i<LEN; i++)
 	{
 		pos = -1;
@@ -168,13 +119,12 @@ void moveUp(int digit[][LEN])
 			{
 				pos = j;
 				flag = 1;
-				// digit[i][j-1] = digit[i][j];
-				// j--;
 			}
 			if(digit[j][i] != 0 && pos>=0)
 			{
 				digit[pos][i] = digit[j][i];
 				digit[j][i] = 0;
+				isMove = 1;
 				
 				pos = -1;
 				flag = 0;
@@ -182,11 +132,15 @@ void moveUp(int digit[][LEN])
 			}
 		}
 	}
+	if(isMove)
+		return 1;
+	return 0;
 }
-void moveRight(int digit[][LEN])
+int moveRight(int digit[][LEN])
 {
 	int i, j;
 	int pos, flag;
+	int isMove = 0;
 	for(i=0; i<LEN; i++)
 	{
 		pos = LEN;
@@ -197,13 +151,12 @@ void moveRight(int digit[][LEN])
 			{
 				pos = j;
 				flag = 1;
-				// digit[i][j-1] = digit[i][j];
-				// j--;
 			}
 			if(digit[i][j] != 0 && pos<LEN)
 			{
 				digit[i][pos] = digit[i][j];
 				digit[i][j] = 0;
+				isMove = 1;
 
 				flag = 0;
 				pos = LEN;
@@ -211,34 +164,31 @@ void moveRight(int digit[][LEN])
 			}
 		}
 	}
+	if(isMove)
+		return 1;
+	return 0;
 }
-void moveDown(int digit[][LEN])
+int moveDown(int digit[][LEN])
 {
 	int i, j;
 	int pos, flag;
-	int isFree = 1;
+	int isMove = 0;
 	for(i=0; i<LEN; i++)
 	{
 		pos = LEN;
 		flag = 0;
 		for(j=LEN-1; j>=0; j--)
 		{
-			// if(digit[i][j] == 0)
-			// {
-			// 	isFree = 0;
-			// 	return;
-			// }
 			if(digit[j][i] == 0 && !flag)//The first barrier positon
 			{
 				pos = j;
 				flag = 1;
-				// digit[i][j-1] = digit[i][j];
-				// j--;
 			}
 			if(digit[j][i] != 0 && pos<LEN)
 			{
 				digit[pos][i] = digit[j][i];
 				digit[j][i] = 0;
+				isMove = 1;
 				
 				pos = LEN;
 				 flag = 0;
@@ -246,11 +196,15 @@ void moveDown(int digit[][LEN])
 			}
 		}
 	}
+	if(isMove)
+		return 1;
+	return 0;
 }
-void addLeft(int digit[][LEN])
+int addLeft(int digit[][LEN])
 {
 	int i, j;
 	int temp;
+	int isAdd = 0;
 	for(i=0; i<LEN; i++)
 	{
 		for(j=0; j<LEN; j++)
@@ -261,15 +215,21 @@ void addLeft(int digit[][LEN])
 				{
 					digit[i][j] = temp + digit[i][j+1];
 					digit[i][j+1] = 0;
+					isAdd = 1;
+					score += temp*2;
 				}
 			}
 		}
 	}
+	if(isAdd)
+		return 1;
+	return 0;
 }
-void addRight(int digit[][LEN])
+int addRight(int digit[][LEN])
 {
 	int i, j;
 	int temp;
+	int isAdd = 0;
 	for(i=0; i<LEN; i++)
 	{
 		for(j=LEN; j>=0; j--)
@@ -280,15 +240,21 @@ void addRight(int digit[][LEN])
 				{
 					digit[i][j] = temp + digit[i][j-1];
 					digit[i][j-1] = 0;
+					isAdd = 1;
+					score += temp*2;
 				}
 			}
 		}
 	}
+	if(isAdd)
+		return 1;
+	return 0;
 }
-void addUp(int digit[][LEN])
+int addUp(int digit[][LEN])
 {
 	int i, j;
 	int temp;
+	int isAdd = 0;
 	for(i=0; i<LEN; i++)
 	{
 		for(j=0; j<LEN; j++)
@@ -299,100 +265,119 @@ void addUp(int digit[][LEN])
 				{
 					digit[j][i] = temp + digit[j+1][i];
 					digit[j+1][i] = 0;
+					isAdd = 1;
+					score += temp*2;
 				}
 			}
 		}
 	}
+	if(isAdd)
+		return 1;
+	return 0;
+
 }
-void addDown(int digit[][LEN])
+int addDown(int digit[][LEN])
 {
 	int i, j;
 	int temp;
-	for(j=LEN; j>=0; j--)
+	int isAdd = 0;
+	for(i=0; i<LEN; i++)
 	{
-		for(j=0; j<LEN; j++)
+		for(j=LEN; j>=0; j--)
 		{
 			if(j-1>=0 && (temp = digit[j][i] ) != 0 && digit[j-1][i] != 0)
 			{
-				if(temp == digit[j+1][i])
+				if(temp == digit[j-1][i])
 				{
 					digit[j][i] = temp + digit[j-1][i];
 					digit[j-1][i] = 0;
+					isAdd = 1;
+					score += temp*2;
 				}
 			}
 		}
 	}
+	if(isAdd)
+		return 1;
+	return 0;
 }
 void show(int digit[][LEN])
 {
-	int i, j, m, n;
+	int i, j, m, n, k;
 	console_clear();	// Clear the screen
+	printf("\n                                 2 0 4 8  Game                                   \n");
+	printf("================================================================================\n");//82
 	for(i=0; i<LEN; i++)
 	{
 		for(j=0; j<LEN; j++)
 		{
+			for(k=0; k<N+1; k++)
+				printf(" ");
 			if(digit[i][j] ==  0)
 			{
-				for(n=0; n<LEN; n++)
-				{
+				for(n=0; n<N; n++)
 					printf(" ");
-				}			
 			}
 			else
 			{
 				printf("%d", digit[i][j]);
 				for(m=0; m<getSpace(digit[i][j]); m++)
-				{
 					printf(" ");
-				}
 			}
 			printf(" ");
 		}
-		printf("\n");
+		printf("\n\n\n");
 	}
+	printf("================================================================================\n");//82
+	for(k=0; k<N; k++)
+		printf(" ");
+	printf("score: %d\n\n", score);
 }
 void keyDown(int digit[][LEN])
-{	int ch;
+{	int ch, k, m;
+	int isMove, isAdd;
+	score = 0;
 	while(1)
 	{
 		ch = getch();
-	// printf("%d ", ch);
 		switch (ch)
 		{
 			case LEFT :
-				// printf("left\n");
+				isMove = moveLeft(digit);
+				isAdd = addLeft(digit);
 				moveLeft(digit);
-				addLeft(digit);
-				moveLeft(digit);
-				createDigit(digit);
+				if(isMove|| isAdd)
+					createDigit(digit);
 				show(digit);
 				break;
 			case RIGHT :
-				// printf("right\n");
+				isMove = moveRight(digit);
+				isAdd = addRight(digit);
 				moveRight(digit);
-				addRight(digit);
-				moveRight(digit);
-				createDigit(digit);
+				if(isMove|| isAdd)
+					createDigit(digit);
 				show(digit);
 				break;
 			case UP:
-				// printf("top\n");
+				isMove = moveUp(digit);
+				isAdd = addUp(digit);
 				moveUp(digit);
-				addUp(digit);
-				moveUp(digit);
-				createDigit(digit);
+				if(isMove || isAdd)
+					createDigit(digit);
 				show(digit);
 				break;
 			case DOWN:
-				printf("down\n");
+				isMove = moveDown(digit);
+				isAdd = addDown(digit);
 				moveDown(digit);
-				// addDown(digit);
-				// moveDown(digit);
-				// createDigit(digit);
+				if(isMove || isAdd)
+					createDigit(digit);
 				show(digit);
 				break;
 			case EXIT:
-				printf("exit\n");
+				for(k=0; k<N+1; k++)
+					printf(" ");
+				printf("Exit success~\n\n");
 				return ;
 		}
 	}

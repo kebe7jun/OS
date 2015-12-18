@@ -5,7 +5,10 @@
 	> Created Time: 2015年12月16日 星期三 09时33分14秒
  ************************************************************************/
 
-#ifndef _INCLUDE/MATH_H
-#define _INCLUDE/MATH_H
+#ifndef _MATH_H
+#define _MATH_H
+
 int pow(int x, int p);
+int abs(int value);
+
 #endif

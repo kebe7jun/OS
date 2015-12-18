@@ -121,6 +121,13 @@ void putch_color(char c, real_color_t back, real_color_t fore)
     move_cursor();
 }
 
+void putch_color_pos(char c, real_color_t back, real_color_t fore, int x, int y)
+{
+    cursor_x = x;
+    cursor_y = y;
+    putch_color(c, back, fore);
+}
+
 void console_write(char *cstr)
 {
     while (*cstr)
@@ -338,7 +345,7 @@ void gets(char *chs)
         }
         else
         {
-            if (ch)
+            if (ch && ch != (char)27)
             {
                chs[pos++] = ch;
                 putch(ch);
@@ -359,30 +366,7 @@ int scanf(const char *format, ...)
     char **arg = (char **) &format;
     char scanfStr[SCANF_MAX_BUFFER_LENGTH];
     arg++;
-    do
-    {
-        keycode = getch();
-        ch = getCharByKeyCode(keycode);
-        keycode = -1;
-        if (ch == '\b')
-        {
-            if (pos>0)
-            {
-                pos--;
-                putch('\b');
-                putch(' ');
-                putch('\b');
-            }
-        }
-        else
-        {
-            scanfStr[pos++] = ch;
-            putch(ch);
-        }
-
-    }
-    while(ch!='\n');
-    scanfStr[pos-1] = '\0';
+    gets(scanfStr);
     pos = 0;
     while(*format)
     {

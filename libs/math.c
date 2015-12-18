@@ -22,3 +22,7 @@ int pow(int x, int p)
 	}
 	return x;
 }
+int abs(int value)
+{
+	return value<0?-value:value;
+}
