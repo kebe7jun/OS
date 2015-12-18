@@ -9,6 +9,7 @@
 #include "string.h"
 #include "system.h"
 #include "time.h"
+#include "math.h"
 #include "apps/shell.h"
 #include "apps/showTime.h"
 #include "apps/2048games.h"
@@ -19,6 +20,9 @@
 void dealShell(char* shell)
 {
 	int result = 0;
+	int row = 0;
+
+	char **s = split(shell, ' ');
 	if (!strcmp(shell, "reboot"))
 	{
 		reboot();
@@ -33,7 +37,11 @@ void dealShell(char* shell)
 	}
 	else if (!strcmp(shell, "snake"))
 	{
-		result = main_snake();
+		result = main_snake(s);
+	}
+	else if (!strcmp(shell, "rand"))
+	{
+		printf("%d\n", abs(rand()));
 	}
 	else if (!strcmp(shell, "help"))
 	{
@@ -42,7 +50,8 @@ void dealShell(char* shell)
 		printf("reboot    ------ Reboot you system.\n");
 		printf("time      ------ Show now system time.\n");
 		printf("2048      ------ Play 2048 game.\n");
-		printf("snake      ------ Play snake game.\n");
+		printf("snake     ------ Play snake game.\n");
+		printf("rand      ------ Create a rand number.\n");
 		printf("help      ------ Show the help documents.\n");
 	}
 	else if (!strcmp(shell, ""))
@@ -64,6 +73,7 @@ void dealShell(char* shell)
 int main_shell()
 {
 	char sh[SHELL_MAX_LENGTH];
+	srand(time(NULL));
 	while(1)
 	{
 		setTextColor(rc_light_red, rc_magenta);

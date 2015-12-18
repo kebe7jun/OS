@@ -5,7 +5,7 @@
 	> Created Time: 2015年12月16日 星期三 10时56分09秒
  ************************************************************************/
 
-#ifndef _INCLUDE/APPS/SHELL_H
-#define _INCLUDE/APPS/SHELL_H
+#ifndef _SHELL_H
+#define _SHELL_H
 int main_shell();
 #endif
