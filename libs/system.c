@@ -3,10 +3,6 @@
 #include "time.h"
 
 
-void newcpuid(unsigned long op, unsigned long v[4])
-{
-__asm__ ("cpuid": "=a" (v[0]), "=b" (v[1]), "=c" (v[2]), "=d" (v[3]):"a" (op));
-}
 
 /* Needed for getting values from CMOS such as clock time etc */
 unsigned read_cmos(unsigned reg, char bcd)
