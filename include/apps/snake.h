@@ -19,7 +19,8 @@ typedef struct snake
 #define UP_KEY 72
 #define RIGHT_KEY 77
 #define DOWN_KEY 80
+#define ESC_KEY 1
 
-int main_snake();
+int main_snake(char **option);
 
 #endif

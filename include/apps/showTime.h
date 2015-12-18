@@ -5,7 +5,7 @@
 	> Created Time: 2015年12月16日 星期三 11时39分25秒
  ************************************************************************/
 
-#ifndef _INCLUDE/APPS/SHOWTIME_H
-#define _INCLUDE/APPS/SHOWTIME_H
+#ifndef _SHOWTIME_H
+#define _SHOWTIME_H
 int main_show_time();
 #endif

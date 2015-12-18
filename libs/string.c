@@ -64,3 +64,26 @@ int strcmp(char* str1, char *str2)
 	}
 	return cmp;
 }
+
+char** split(char *str, char ch)
+{
+	char x[100][100];
+	int len = strlen(str);
+	int i = 0;
+	int j = 0;
+	for (i = 0; i<len; i++)
+	{
+		if (str[i] == ch)
+		{
+			str[i] = '\0';
+		}
+	}
+	for (i = 0; i<len; )
+	{
+		while(!str[i++]);
+		strcpy(x[j++], str+i-1);
+		while(str[i++]);
+	}
+	x[j][0] = '\0';
+	return x;
+}

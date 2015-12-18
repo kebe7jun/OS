@@ -21,6 +21,8 @@ static char nowX = 0;
 static char nowY = 0;
 static char foodX = 0;
 static char foodY = 0;
+static int speed = 300000000;
+static uint32_t score = 0;
 
 Snake *newSnake()
 {
@@ -61,6 +63,7 @@ void newFood()
 	}
 	foodX = fx;
 	foodY = fy;
+	score += speed/100000000;
 }
 
 void initSnake()
@@ -89,13 +92,28 @@ void initSnake()
 void printScreen()
 {
 	Snake *s = snake.next;
+	int i;
 	console_clear();
-	while(s)
+	while(s->next)
 	{
 		putch_color_pos('*', rc_black, rc_white, s->x, s->y);
 		s = s->next;
 	}
-	putch_color_pos('#', rc_black, rc_white, foodX, foodY);
+	putch_color_pos('@', rc_black, rc_white, s->x, s->y);
+	putch_color_pos('#', rc_black, rc_green, foodX, foodY);
+
+	for (i = 0; i < 20; ++i)
+	{
+		putch_color_pos('|', rc_black, rc_white, 70, i);	
+	}
+
+	for (i = 0; i < 70; ++i)
+	{
+		putch_color_pos('-', rc_black, rc_white, i, 20);	
+	}
+
+	putch_color_pos('\0', rc_black, rc_white, 70, 5);
+	printf("Score: %d\n", score);
 	putch_color_pos(' ', rc_black, rc_white, 79, 24);
 }
 
@@ -111,6 +129,16 @@ int moveSnake(char toX, char toY)
 	{
 		printf("End!\n");
 		return 1;
+	}
+	s = snake.next;
+	while(s)
+	{
+		if (newX == s->x && newY == s->y)
+		{
+			printf("End!\n");
+			return 1;
+		}
+		s = s->next;
 	}
 	s = newSnake();
 	s->x = newX;
@@ -137,7 +165,12 @@ void startGame()
 	printScreen();
 	while(1)
 	{
-		key = getchInStep(300000000);
+		key = getchInStep(speed);
+		if (key == ESC_KEY)
+		{
+			printf("User End.\n");
+			break;
+		}
 		switch(key)
 		{
 			case LEFT_KEY:
@@ -173,8 +206,46 @@ void startGame()
 	}
 }
 
-int main_snake()
+int checkOption(char** option)
 {
+	char s;
+	if (strcmp(option[1], "-s"))
+	{
+		s = option[2][0];
+		switch(s)
+		{
+			case '1':
+				speed = 700000000;
+				break;
+			case '2':
+				speed = 500000000;
+				break;
+			case '3':
+				speed = 300000000;
+				break;
+			case '4':
+				speed = 200000000;
+				break;
+			default:
+				return 1;
+				break;
+		}
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+int main_snake(char** option)
+{
+	int result;
+	// if (result = checkOption(option))
+	// {
+	// 	printf("Error option, please enter like snake -s 1.\n");
+	// 	return result;
+	// }
 	initSnake();
 	printScreen();
 	startGame();

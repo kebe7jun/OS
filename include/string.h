@@ -11,4 +11,5 @@ int strlen(char* str);
 void strcpy(char* to, char* from);
 int strcmp(char* str1, char *str2);
 int convertStringToInt(char *str);
+char **split(char *str, char ch);
 #endif
