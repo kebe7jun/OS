@@ -41,9 +41,7 @@ void initBoxes(int digit[][LEN])
 			break;
 		}
 	}
-	// printf("%d, %d ",posX, posY);
 	digit[posX][posY] = selectDigit();	
-	// printf("%d\n", digit[posX][posY]);
 	show(digit);
 }
 void createDigit(int digit[][LEN])
@@ -83,12 +81,12 @@ int moveLeft(int digit[][LEN])
 		flag = 0;
 		for(j=0; j<LEN; j++)
 		{
-			if(digit[i][j] == 0 && !flag)//The first barrier positon
+			if(!digit[i][j] && !flag)//The first barrier positon
 			{
 				pos = j;
 				flag = 1;
 			}
-			if(digit[i][j] != 0 && pos >= 0)
+			if(digit[i][j] && pos >= 0)
 			{
 				digit[i][pos] = digit[i][j];
 				digit[i][j] = 0;
@@ -115,12 +113,12 @@ int moveUp(int digit[][LEN])
 		flag = 0;
 		for(j=0; j<LEN; j++)
 		{
-			if(digit[j][i] == 0 && !flag)//The first barrier positon
+			if(!digit[j][i] && !flag)//The first barrier positon
 			{
 				pos = j;
 				flag = 1;
 			}
-			if(digit[j][i] != 0 && pos>=0)
+			if(digit[j][i] && pos>=0)
 			{
 				digit[pos][i] = digit[j][i];
 				digit[j][i] = 0;
@@ -147,12 +145,12 @@ int moveRight(int digit[][LEN])
 		flag = 0;
 		for(j=LEN-1; j>=0; j--)
 		{
-			if(digit[i][j] == 0 && !flag)//The first barrier positon
+			if(!digit[i][j] && !flag)//The first barrier positon
 			{
 				pos = j;
 				flag = 1;
 			}
-			if(digit[i][j] != 0 && pos<LEN)
+			if(digit[i][j] && pos<LEN)
 			{
 				digit[i][pos] = digit[i][j];
 				digit[i][j] = 0;
@@ -179,12 +177,12 @@ int moveDown(int digit[][LEN])
 		flag = 0;
 		for(j=LEN-1; j>=0; j--)
 		{
-			if(digit[j][i] == 0 && !flag)//The first barrier positon
+			if(!digit[j][i] && !flag)//The first barrier positon
 			{
 				pos = j;
 				flag = 1;
 			}
-			if(digit[j][i] != 0 && pos<LEN)
+			if(digit[j][i] && pos<LEN)
 			{
 				digit[pos][i] = digit[j][i];
 				digit[j][i] = 0;
@@ -209,7 +207,7 @@ int addLeft(int digit[][LEN])
 	{
 		for(j=0; j<LEN; j++)
 		{
-			if(j+1<LEN && (temp = digit[i][j] )!= 0 && digit[i][j+1] != 0)
+			if(j+1<LEN && (temp = digit[i][j] )!= 0 && digit[i][j+1])
 			{
 				if(temp == digit[i][j+1])
 				{
@@ -234,7 +232,7 @@ int addRight(int digit[][LEN])
 	{
 		for(j=LEN; j>=0; j--)
 		{
-			if(j-1>=0 && (temp = digit[i][j] ) != 0 && digit[i][j-1] != 0)
+			if(j-1>=0 && (temp = digit[i][j] ) != 0 && digit[i][j-1])
 			{
 				if(temp == digit[i][j-1])
 				{
@@ -259,7 +257,7 @@ int addUp(int digit[][LEN])
 	{
 		for(j=0; j<LEN; j++)
 		{
-			if(j+1<LEN && (temp = digit[j][i] ) != 0 && digit[j+1][i] != 0)
+			if(j+1<LEN && (temp = digit[j][i] ) != 0 && digit[j+1][i])
 			{
 				if(temp == digit[j+1][i])
 				{
@@ -285,7 +283,7 @@ int addDown(int digit[][LEN])
 	{
 		for(j=LEN; j>=0; j--)
 		{
-			if(j-1>=0 && (temp = digit[j][i] ) != 0 && digit[j-1][i] != 0)
+			if(j-1>=0 && (temp = digit[j][i] ) != 0 && digit[j-1][i])
 			{
 				if(temp == digit[j-1][i])
 				{
@@ -300,6 +298,27 @@ int addDown(int digit[][LEN])
 	if(isAdd)
 		return 1;
 	return 0;
+}
+int isOver(int digit[][LEN])
+{
+	int i, j;
+	for(i=0; i<LEN;  i++)
+	{
+		for(j=0; j<LEN; j++)
+		{
+			if(!digit[i][j])
+				return 0;
+		}
+	}
+	for(i=0; i<LEN;  i++)
+	{
+		for(j=0; j<LEN; j++)
+		{
+			if((j+1<LEN && digit[i][j] == digit[i][j+1]) || (i+1<LEN && digit[i][j] == digit[i+1][j]))
+				return 0;
+		}
+	}
+	return 1;
 }
 void show(int digit[][LEN])
 {
@@ -332,6 +351,9 @@ void show(int digit[][LEN])
 	for(k=0; k<N; k++)
 		printf(" ");
 	printf("score: %d\n\n", score);
+	for(k=0; k<N; k++)
+		printf(" ");
+	printf("Esc---Exit\n\n");
 }
 void keyDown(int digit[][LEN])
 {	int ch, k, m;
@@ -379,6 +401,12 @@ void keyDown(int digit[][LEN])
 					printf(" ");
 				printf("Exit success~\n\n");
 				return ;
+		}
+		if(isOver(digit))
+		{
+			for(k=0; k<N+1; k++)
+				printf(" ");
+			printf("Oh no!Game over~\n\n");
 		}
 	}
 }
