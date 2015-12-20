@@ -4,6 +4,8 @@
 */
 #ifndef _KEY_BOARD_MAP
 #define _KEY_BOARD_MAP
+
+//The map of keycode and character.
 unsigned char keyboard_map[128] =
 {
     0,  27, '1', '2', '3', '4', '5', '6', '7', '8', /* 9 */
@@ -43,6 +45,8 @@ unsigned char keyboard_map[128] =
     0,  /* F12 Key */
     0,  /* All other keys are undefined */
 };
+
+//The map of the keycode and character when shift button pressed.
 unsigned char keyboard_map_1[128] =
 {
     0,  27, '!', '@', '#', '$', '%', '^', '&', '*', /* 9 */

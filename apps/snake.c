@@ -13,40 +13,45 @@
 
 	
 	
-static Snake snake;
-static Snake *head;
-static uint32_t bodySize = 0;
-static uint32_t startMem = 0xf00000;
-static char nowX = 0;
-static char nowY = 0;
-static char foodX = 0;
-static char foodY = 0;
-static int speed = 300000000;
-static uint32_t score = 0;
+static Snake snake;	//Store the snake like list info.
+static Snake *head;	//The snake head.
 
+static uint32_t bodySize = 0;		//The snake init size is zero.
+static uint32_t startMem = 0xf00000;		//The start pos to store snake info in memory.
+
+static char nowX = 0;	//The current snake head X pos.
+static char nowY = 0;	//The current snake head Y pos.
+static char foodX = 0;		//The current food X pos.
+static char foodY = 0;	//The current food Y pos.
+
+static int speed = 300000000;	//The default speed.
+static uint32_t score = 0;		//The default score gotten is zero.
+
+//Nww a snake node from memory.
 Snake *newSnake()
 {
 	Snake *s;
 	int p = startMem + bodySize*sizeof(Snake);
-	if (p>=0xffffff)
+	if (p>=0xffffff)	//If out of the memoey, set p to init pos.
 	{
 		p = startMem;
 	}
 	s = (Snake*)p;
-	bodySize++;
+	bodySize++;		//Let snake body size incerese.
 	s->next = NULL;
 	return s;
 }
 
+//Now a food.
 void newFood()
 {
 	int fx, fy;
 	int valid = 1;
 	Snake *s = snake.next;
-	srand(time(NULL));
+	srand(time(NULL));		//Set the timer seek.
 	while(1)
 	{
-		fx = abs(rand())%70;
+		fx = abs(rand())%70;		//Get the pos of new food.
 		fy = abs(rand())%20;
 		while(s)
 		{
@@ -56,20 +61,21 @@ void newFood()
 			}
 			s = s->next;
 		}
-		if (valid)
+		if (valid)		//If the new pos is valid, good.
 		{
 			break;
 		}
 	}
 	foodX = fx;
 	foodY = fy;
-	score += speed/100000000;
+	score += speed/100000000;	//Set the score.
 }
 
+//Init the snake.
 void initSnake()
 {
 	Snake *s, *s1;
-	s = newSnake();
+	s = newSnake();		//New 3 nodes.
 	s->x = 30;
 	s->y = 12;
 	s1 = s;
@@ -86,9 +92,10 @@ void initSnake()
 	head = s;
 	nowX = 1;
 	nowY = 0;
-	newFood();
+	newFood();		//New food.
 }
 
+//Print the snake body and others info.
 void printScreen()
 {
 	Snake *s = snake.next;
@@ -96,13 +103,13 @@ void printScreen()
 	console_clear();
 	while(s->next)
 	{
-		putch_color_pos('*', rc_black, rc_white, s->x, s->y);
+		putch_color_pos('*', rc_black, rc_white, s->x, s->y);		//Print snake body.
 		s = s->next;
 	}
-	putch_color_pos('@', rc_black, rc_white, s->x, s->y);
-	putch_color_pos('#', rc_black, rc_green, foodX, foodY);
+	putch_color_pos('@', rc_black, rc_white, s->x, s->y);		//Snake head.
+	putch_color_pos('#', rc_black, rc_green, foodX, foodY);	//Food.
 
-	for (i = 0; i < 20; ++i)
+	for (i = 0; i < 20; ++i)		//The boder.
 	{
 		putch_color_pos('|', rc_black, rc_white, 70, i);	
 	}
@@ -113,10 +120,11 @@ void printScreen()
 	}
 
 	putch_color_pos('\0', rc_black, rc_white, 70, 5);
-	printf("Score: %d\n", score);
+	printf("Score: %d\n", score);		//Print score.
 	putch_color_pos(' ', rc_black, rc_white, 79, 24);
 }
 
+//Move the snake to a new pos.
 int moveSnake(char toX, char toY)
 {
 	int newX, newY;
@@ -125,13 +133,13 @@ int moveSnake(char toX, char toY)
 	newY = head->y+toY;
 	nowX = toX;
 	nowY = toY;
-	if (newX<0 || newY <0 || newX >=70 || newY >=20)
+	if (newX<0 || newY <0 || newX >=70 || newY >=20)		//Check border.
 	{
 		printf("End!\n");
 		return 1;
 	}
 	s = snake.next;
-	while(s)
+	while(s)		//Check the snake eat self?
 	{
 		if (newX == s->x && newY == s->y)
 		{
@@ -140,7 +148,7 @@ int moveSnake(char toX, char toY)
 		}
 		s = s->next;
 	}
-	s = newSnake();
+	s = newSnake();		//New a body.
 	s->x = newX;
 	s->y = newY;
 	head->next = s;
@@ -153,20 +161,20 @@ int moveSnake(char toX, char toY)
 	{
 		snake.next = snake.next->next;
 	}
-	printScreen();
+	printScreen();//Print new snake ifno.
 	return 0;
 }
 
 
-void startGame()
+void startGame()	//Start Game.
 {
 	int key;
 	int result;
 	printScreen();
 	while(1)
 	{
-		key = getchInStep(speed);
-		if (key == ESC_KEY)
+		key = getchInStep(speed);	//Get user input.
+		if (key == ESC_KEY)		//If user press ESC, exit Game.
 		{
 			printf("User End.\n");
 			break;

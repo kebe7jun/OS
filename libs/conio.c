@@ -10,7 +10,7 @@
 
 static char keycode = -1;
 
-
+//The callback function when user pressed a key.
 void onGetKeyFunction(char keycode1)
 {
 	keycode = keycode1;
@@ -19,8 +19,8 @@ int getch()
 {
 	char keycode1;
 	// printf("onGetKeyFunction:%d\n", &onGetKeyFunction);
-    registerListenKey(&onGetKeyFunction);
-    while(keycode == -1);
+    registerListenKey(&onGetKeyFunction);       //Register the callback function.
+    while(keycode == -1);       //Wait for user press key.
     keycode1 = keycode;
     keycode = -1;
     return keycode1;
@@ -30,7 +30,7 @@ int getchInStep(uint32_t step)
 	char keycode1;
 	// printf("onGetKeyFunction:%d\n", &onGetKeyFunction);
     registerListenKey(&onGetKeyFunction);
-    while(step--);
+    while(step--);       //Wait for user press key in steps.
     keycode1 = keycode;
     keycode = -1;
     return keycode1;

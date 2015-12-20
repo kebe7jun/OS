@@ -2,25 +2,27 @@
 #include "keyboard_map.h"
 
 
-// VGA 的显示缓冲的起点是 0xB8000
+// The VGA cache pos.
 static uint16_t *video_memory = (uint16_t *)0xB8000;
 
 
-// 屏幕"光标"的坐标
+// The cursor pos now.
 static uint8_t cursor_x = 0;
 static uint8_t cursor_y = 0;
+
 static uint8_t is_shift_down = 0;
 static uint8_t font_size = 80;
+
+//The color will show.
 static real_color_t now_set_color_back = rc_black;
 static real_color_t now_set_color_front = rc_white;
 
+//Move cursor pos.
 static void move_cursor()
 {
-    // 屏幕是 80 字节宽
+
     uint16_t cursorLocation = cursor_y * font_size + cursor_x;
 
-    // 在这里用到的两个内部寄存器的编号为14与15，分别表示光标位置
-    // 的高8位与低8位。
 
     outb(0x3D4, 14);                    // 告诉 VGA 我们要设置光标的高字节
     outb(0x3D5, cursorLocation >> 8);   // 发送高 8 位
@@ -28,26 +30,27 @@ static void move_cursor()
     outb(0x3D5, cursorLocation);        // 发送低 8 位
 }
 
+//Clear the screen.
 void console_clear()
 {
     uint8_t attribute_byte = (0 << 4) | (15 & 0x0F);
     uint16_t blank = 0x20 | (attribute_byte << 8);
 
     int i;
-    for (i = 0; i < font_size * 25; i++)
+    for (i = 0; i < font_size * 25; i++) 
     {
-        video_memory[i] = blank;
+        video_memory[i] = blank;    //Full the line with blank.
     }
 
     cursor_x = 0;
     cursor_y = 0;
-    move_cursor();
+    move_cursor();  //Move cursor.
 }
 
 
+//Move screen up
 static void scroll()
 {
-    // attribute_byte 被构造出一个黑底白字的描述格式
     uint8_t attribute_byte = (0 << 4) | (15 & 0x0F);
     uint16_t blank = 0x20 | (attribute_byte << 8);  // space 是 0x20
 
@@ -57,7 +60,7 @@ static void scroll()
         // 将所有行的显示数据复制到上一行，第一行永远消失了...
         int i;
 
-        for (i = 0 * font_size; i < 24 * font_size; i++)
+        for (i = 0 * font_size; i < 24 * font_size; i++)   //Full the i-th line with i+1-th line.
         {
             video_memory[i] = video_memory[i+80];
         }
@@ -73,7 +76,7 @@ static void scroll()
     }
 }
 
-
+//Put a char to the screen with given color.
 void putch_color(char c, real_color_t back, real_color_t fore)
 {
     uint8_t back_color = (uint8_t)back;
@@ -82,13 +85,11 @@ void putch_color(char c, real_color_t back, real_color_t fore)
     uint8_t attribute_byte = (back_color << 4) | (fore_color & 0x0F);
     uint16_t attribute = attribute_byte << 8;
 
-    // 0x08 是退格键的 ASCII 码
-    // 0x09 是tab 键的 ASCII 码
-    if (c == 0x08 && cursor_x)
+    if (c == 0x08 && cursor_x)      //Backspace
     {
         cursor_x--;
     }
-    else if (c == 0x09)
+    else if (c == 0x09)     //Tab
     {
         cursor_x = (cursor_x+8) & ~(8-1);
     }
@@ -101,33 +102,31 @@ void putch_color(char c, real_color_t back, real_color_t fore)
         cursor_x = 0;
         cursor_y++;
     }
-    else if (c >= ' ')
+    else if (c >= ' ')  //If the char is a normal character, show it.
     {
         video_memory[cursor_y*80 + cursor_x] = c | attribute;
         cursor_x++;
     }
 
-    // 每 80 个字符一行，满80就必须换行了
-    if (cursor_x >= 80)
+    if (cursor_x >= 80)     //Set cursor.
     {
         cursor_x = 0;
         cursor_y ++;
     }
 
-    // 如果需要的话滚动屏幕显示
-    scroll();
-
-    // 移动硬件的输入光标
+    scroll();       //Scroll screen if need.
     move_cursor();
 }
 
+//Putch a char at given pos and color.
 void putch_color_pos(char c, real_color_t back, real_color_t fore, int x, int y)
 {
-    cursor_x = x;
+    cursor_x = x;       //Set cursor.
     cursor_y = y;
     putch_color(c, back, fore);
 }
 
+//Write a string to screen.
 void console_write(char *cstr)
 {
     while (*cstr)
@@ -136,16 +135,13 @@ void console_write(char *cstr)
     }
 }
 
+//Put a char to the screen.
 void putch(char c)
 {
-    putch_color(c, now_set_color_back, now_set_color_front);
-    // if (ch == '\b')
-    // {
-    //     putch(' ');
-    //     putch('\b');
-    // }
+    putch_color(c, now_set_color_back, now_set_color_front);        //Call putch_color with setted color.
 }
 
+//Write a unsigned int var to the screen.
 void console_write_uint32_t(uint32_t t)
 {
 
@@ -200,15 +196,16 @@ void console_write_uint8_t(uint8_t t)
 
 }
 
+//Write a string with given color.
 void console_write_color(char *cstr, real_color_t back, real_color_t fore)
 {
-    while (*cstr)
+    while (*cstr)   //Call putch_color to print string.
     {
         putch_color(*cstr++, back, fore);
     }
 }
 
-
+//Deal print
 void itoa (char *buf, int base, int d)
 {
     char *p = buf;
@@ -251,27 +248,28 @@ void itoa (char *buf, int base, int d)
     }
 }
 
+//The printf function.
+//It support %s %d %x
 void printf (const char *format, ...)
 {
-    char **arg = (char **) &format;
+    char **arg = (char **) &format;     //Get the args.
     int c;
     char buf[20];
 
     arg++;
 
-    while ((c = *format++) != 0)
+    while ((c = *format++) != 0)        //Exec format.
     {
-        if (c != '%')
+        if (c != '%')   //If now %, print it 
             putch(c);
         else
         {
             char *p;
 
-            c = *format++;
+            c = *format++;  //Get the next arg.
             switch (c)
             {
             case 'd':
-            case 'u':
             case 'x':
                 itoa (buf, c, *((int *) arg++));
                 p = buf;
@@ -288,7 +286,7 @@ void printf (const char *format, ...)
                     putch (*p++);
                 break;
 
-            default:
+            default:        //If not support it, print the char.
                 putch (*((int *) arg++));
                 break;
             }
@@ -296,17 +294,18 @@ void printf (const char *format, ...)
     }
 }
 
+//Get a character by keycode.
 char getCharByKeyCode(char keycode)
 {
     char ch;
-    if (keycode == 42 || keycode == 54)
+    if (keycode == 42 || keycode == 54)     //Shift is down.
     {
         is_shift_down = 1;
     }
     ch = keyboard_map[keycode];
     if (is_shift_down)
     {
-        if (ch>='a' && ch <= 'z')
+        if (ch>='a' && ch <= 'z')       //Switch lowwer case and upper case.
         {
             ch += 'A' - 'a';
         }
@@ -322,7 +321,7 @@ char getCharByKeyCode(char keycode)
     return ch;
 }
 
-
+//Get a string while Enter pressed.
 void gets(char *chs)
 {
     char ch;
@@ -330,10 +329,10 @@ void gets(char *chs)
     int keycode;
     do
     {
-        keycode = getch();
+        keycode = getch();  //By getch() get the keycode.
         ch = getCharByKeyCode(keycode);
         keycode = -1;
-        if (ch == '\b')
+        if (ch == '\b')     //If backspace pressed.
         {
             if (pos>0)
             {
@@ -356,6 +355,8 @@ void gets(char *chs)
     while(ch!='\n');
     chs[pos-1] = '\0';
 }
+
+//The scanf function, to get user input.
 int scanf(const char *format, ...)
 {
     char ch;
@@ -366,9 +367,9 @@ int scanf(const char *format, ...)
     char **arg = (char **) &format;
     char scanfStr[SCANF_MAX_BUFFER_LENGTH];
     arg++;
-    gets(scanfStr);
+    gets(scanfStr);     //By gets(), get a line.
     pos = 0;
-    while(*format)
+    while(*format)      //Decode the line to each var.
     {
         if (*format == '%')
         {
@@ -387,7 +388,7 @@ int scanf(const char *format, ...)
                     tmp[pos1++] = scanfStr[pos++];
                 }
                 tmp[pos1++] = '\0';
-                *(int*)p = convertStringToInt(tmp);
+                *(int*)p = convertStringToInt(tmp);     //Convert string to a integer.
                 break;
             case 'c':
                 *p = scanfStr[pos++];
@@ -413,8 +414,13 @@ void setTextColor(real_color_t back, real_color_t front)
     now_set_color_front = front;
 }
 
+//The var of the callback function.
 static void (*onGetKeyFunction)(char keycode);
+
+//The flag that is send a key.
 static int isSendKeyCode = 0;
+
+//Set the callback function.
 void registerListenKey(void (*function)(char keycode))
 {
     onGetKeyFunction = function;

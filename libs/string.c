@@ -9,7 +9,7 @@
 #include "string.h"
 #include "math.h"
 
-
+//To get the length of a string.
 int strlen(char* str)
 {
 	int len = 0;
@@ -20,6 +20,8 @@ int strlen(char* str)
 	}
 	return len;
 }
+
+//Copy the second string to the first string.
 void strcpy(char* to, char* from)
 {
 	char *to1 = to;
@@ -27,9 +29,10 @@ void strcpy(char* to, char* from)
 	{
 		*to1++ = *from++;
 	}
-	*to1++ = '\0';
+	*to1++ = '\0';		//Append the \0 to the end of the str.
 }
 
+//Convert a string to a integer.
 int convertStringToInt(char *str)
 {
 	int t = 0, p = 0;
@@ -37,11 +40,13 @@ int convertStringToInt(char *str)
 	len = strlen(str);
 	while(len)
 	{
-		t+= (str[len-1]-'0')*pow(10, p++);
+		t+= (str[len-1]-'0')*pow(10, p++);	//
 		len--;
 	}
 	return t;
 }
+
+//Cmp to str, if the two strs is the same, return 0.
 int strcmp(char* str1, char *str2)
 {
 	int cmp = 0;
@@ -65,6 +70,7 @@ int strcmp(char* str1, char *str2)
 	return cmp;
 }
 
+//Split a str to str array wich given character.
 char** split(char *str, char ch)
 {
 	char x[100][100];

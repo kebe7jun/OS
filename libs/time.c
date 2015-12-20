@@ -170,6 +170,7 @@ static unsigned long date_time_to_time_t(unsigned year, unsigned month,
   return rv;
 }
 
+//Get the time now, return seconds from 1970.1.1 to now.
 time_t time(time_t *timer)
 {
   static signed char bcd = -1;
@@ -231,11 +232,13 @@ signed 32-bit time_t will overflow before then, in 2038 */
 
 static int g_seed;
 
+//Set the rand seek.
 void srand(int new_seed)
 {
   g_seed = new_seed;
 }
 
+//Get a randon number.
 int rand()
 {
   if(g_seed == 0)
