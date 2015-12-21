@@ -43,11 +43,16 @@ void dealShell(char* shell)
 	{
 		printf("%d\n", abs(rand()));
 	}
+	else if (!strcmp(shell, "clear"))
+	{
+		console_clear();
+	}
 	else if (!strcmp(shell, "help"))
 	{
 		printf("Usage 'commands [option]...' to call commands.\n");
 		printf("This shell support the follows commands:\n");
 		printf("reboot    ------ Reboot you system.\n");
+		printf("clear     ------ Clear the screen.\n");
 		printf("time      ------ Show now system time.\n");
 		printf("2048      ------ Play 2048 game.\n");
 		printf("snake     ------ Play snake game.\n");

@@ -436,10 +436,10 @@ void onKeyUp(char keycode)
 {
     switch(keycode)
     {
-    case 42:
-    case 54:    //Shift up envent.
-        is_shift_down = 0;
-        break;
+        case 42:
+        case 54:    //Shift up envent.
+            is_shift_down = 0;
+            break;
     }
 }
 

@@ -206,37 +206,37 @@ void startGame()
 	}
 }
 
-int checkOption(char** option)
-{
-	char s;
-	if (strcmp(option[1], "-s"))
-	{
-		s = option[2][0];
-		switch(s)
-		{
-			case '1':
-				speed = 700000000;
-				break;
-			case '2':
-				speed = 500000000;
-				break;
-			case '3':
-				speed = 300000000;
-				break;
-			case '4':
-				speed = 200000000;
-				break;
-			default:
-				return 1;
-				break;
-		}
-		return 0;
-	}
-	else
-	{
-		return 1;
-	}
-}
+// int checkOption(char** option)
+// {
+// 	char s;
+// 	if (strcmp(option[1], "-s"))
+// 	{
+// 		s = option[2][0];
+// 		switch(s)
+// 		{
+// 			case '1':
+// 				speed = 700000000;
+// 				break;
+// 			case '2':
+// 				speed = 500000000;
+// 				break;
+// 			case '3':
+// 				speed = 300000000;
+// 				break;
+// 			case '4':
+// 				speed = 200000000;
+// 				break;
+// 			default:
+// 				return 1;
+// 				break;
+// 		}
+// 		return 0;
+// 	}
+// 	else
+// 	{
+// 		return 1;
+// 	}
+// }
 
 int main_snake(char** option)
 {

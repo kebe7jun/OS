@@ -1,6 +1,8 @@
 #include "stdio.h"
 #include "time.h"
 #include "conio.h"
+#include "math.h"
+#include "apps/2048games.h"
 #define  LEN 4
 #define N 8
 #define SPACE 32
@@ -348,10 +350,10 @@ void show(int digit[][LEN])
 		printf("\n\n\n");
 	}
 	printf("================================================================================\n");//82
-	for(k=0; k<N; k++)
+	for(k=0; k<N+1; k++)
 		printf(" ");
 	printf("score: %d\n\n", score);
-	for(k=0; k<N; k++)
+	for(k=0; k<N+1; k++)
 		printf(" ");
 	printf("Esc---Exit\n\n");
 }
