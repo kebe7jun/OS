@@ -94,13 +94,14 @@ void idt_init(void)
 	load_idt(idt_ptr);
 }
 
+// Keyboard init.
 void kb_init(void)
 {
 	/* 0xFD is 11111101 - enables only IRQ1 (keyboard)*/
 	write_port(0x21 , 0xFD);
 }
 
-
+// The callback function when user press key.
 void keyboard_handler_main(void)
 {
 	unsigned char status;
@@ -109,11 +110,11 @@ void keyboard_handler_main(void)
 	/* write EOI */
 	write_port(0x20, 0x20);
 
-	status = read_port(KEYBOARD_STATUS_PORT);
+	status = read_port(KEYBOARD_STATUS_PORT);		//Get the keyboard statuc
 	/* Lowest bit of status will be set if buffer is not empty */
 	if (status & 0x01) {
 		keycode = read_port(KEYBOARD_DATA_PORT);
-		if(keycode < 0){
+		if(keycode < 0){	//When the key up, the keycode smaller than zero.
 			onKeyUp((uint8_t)keycode-128);
 			return;
 		}

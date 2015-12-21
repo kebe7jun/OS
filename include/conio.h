@@ -9,7 +9,11 @@
 #define _CONIO_H
 #include "stdio.h"
 
+//Get a key from keyboard, while user press.
 int getch();
+
+//Get a key from keyboard in step.
+//
 int getchInStep(uint32_t step);
 
 #endif

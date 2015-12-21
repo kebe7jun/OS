@@ -22,7 +22,7 @@ typedef unsigned char  uint8_t;
 typedef          char  int8_t;
 typedef unsigned long time_t;
 
-
+//Color
 typedef
 enum real_color {
     rc_black = 0,
@@ -81,8 +81,10 @@ void onKeyDown(char keycode);
 //Key relese.
 void onKeyUp(char keycode);
 
+//Set the keypressed callable function
 void registerListenKey(void (*function)(char keycode));
 
+//Set the test color to show.
 void setTextColor(real_color_t back, real_color_t front);
 
 #endif
