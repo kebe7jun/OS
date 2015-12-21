@@ -12,6 +12,7 @@
 #define RIGHT 77
 #define DOWN 80
 int score = 0;
+//Select 2 or 4 randomly.
 int selectDigit()
 {
 	int d;
@@ -21,13 +22,12 @@ int selectDigit()
 void initBoxes(int digit[][LEN])
 {
 	int temp;
-	int posX,  posY;// the rand position
+	int posX,  posY;		// The position(X, Y) of digit.
 	srand((unsigned)time(NULL));
-	posX = abs(rand()%(LEN));
+	posX = abs(rand()%(LEN));	//The random position.
 	posY = abs(rand()%(LEN));
-	// printf("%d, %d ",posX, posY);
 	digit[posX][posY] = selectDigit();	
-	while(1)
+	while(1)		//Prevent the position from  being equal to occupied positions.
 	{
 		if(temp = abs(rand()%(LEN)) != posX)
 		{
@@ -51,7 +51,7 @@ void createDigit(int digit[][LEN])
 	int i, j;
 	int posX,  posY;// the rand position
 	srand((unsigned)time(NULL));
-	while(1)
+	while(1)		//Create a random position.
 	{
 		posX = abs(rand())%LEN;
 		posY = abs(rand())%LEN;
@@ -60,7 +60,7 @@ void createDigit(int digit[][LEN])
 	}
 	digit[posX][posY] = selectDigit();	
 }
-int getSpace(int n)
+int getSpace(int n)		//manage the format.
 {	
 	if(n/10 == 0)//1
 		return N-1;
@@ -76,14 +76,14 @@ int moveLeft(int digit[][LEN])
 {
 	int i, j;
 	int pos, flag;
-	int isMove = 0;
+	int isMove = 0;		//Judge the positiond if have been moved.
 	for(i=0; i<LEN; i++)
 	{
 		pos = -1;
 		flag = 0;
 		for(j=0; j<LEN; j++)
 		{
-			if(!digit[i][j] && !flag)//The first barrier positon
+			if(!digit[i][j] && !flag)		//The first barrier positon.
 			{
 				pos = j;
 				flag = 1;
@@ -115,7 +115,7 @@ int moveUp(int digit[][LEN])
 		flag = 0;
 		for(j=0; j<LEN; j++)
 		{
-			if(!digit[j][i] && !flag)//The first barrier positon
+			if(!digit[j][i] && !flag)		//The first barrier positon
 			{
 				pos = j;
 				flag = 1;
@@ -147,7 +147,7 @@ int moveRight(int digit[][LEN])
 		flag = 0;
 		for(j=LEN-1; j>=0; j--)
 		{
-			if(!digit[i][j] && !flag)//The first barrier positon
+			if(!digit[i][j] && !flag)		//The first barrier positon
 			{
 				pos = j;
 				flag = 1;
@@ -179,7 +179,7 @@ int moveDown(int digit[][LEN])
 		flag = 0;
 		for(j=LEN-1; j>=0; j--)
 		{
-			if(!digit[j][i] && !flag)//The first barrier positon
+			if(!digit[j][i] && !flag)		//The first barrier positon
 			{
 				pos = j;
 				flag = 1;
@@ -204,7 +204,7 @@ int addLeft(int digit[][LEN])
 {
 	int i, j;
 	int temp;
-	int isAdd = 0;
+	int isAdd = 0;	//Judge if there have the same digit.
 	for(i=0; i<LEN; i++)
 	{
 		for(j=0; j<LEN; j++)
@@ -301,6 +301,7 @@ int addDown(int digit[][LEN])
 		return 1;
 	return 0;
 }
+//Judge the game if  will over.
 int isOver(int digit[][LEN])
 {
 	int i, j;
@@ -325,7 +326,7 @@ int isOver(int digit[][LEN])
 void show(int digit[][LEN])
 {
 	int i, j, m, n, k;
-	console_clear();	// Clear the screen
+	console_clear();		// Clear the screen
 	printf("\n                                 2 0 4 8  Game                                   \n");
 	printf("================================================================================\n");//82
 	for(i=0; i<LEN; i++)
@@ -414,8 +415,8 @@ void keyDown(int digit[][LEN])
 }
 int game_play()
 {
-	int digit[LEN][LEN] = {0};
-	initBoxes(digit);
-	keyDown(digit);
+	int digit[LEN][LEN] = {0};		//The zero means that the position is none.
+	initBoxes(digit);			//Init the game.
+	keyDown(digit);			//Monitor the keyboard.
 	return 0;
 }
